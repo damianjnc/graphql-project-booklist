@@ -1,26 +1,35 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { gql } from 'apollo-boost'
-import { graphql } from 'react-apollo'
+import { useQuery } from '@apollo/react-hooks'
 
 const GET_BOOKS_QUERY = gql`
-    {
-        books {
-            name
-            id
-        }
+  {
+    books {
+      name
+      id
     }
+  }
 `
 
-class BookList extends Component {
-    render(){
-        return(
-            <div>
-                <ul id="book-list">
-                    <li>Book name</li>
-                </ul>
-            </div>
-        );
-    }
+const BookList = () => {
+  const { loading, error, data } = useQuery(GET_BOOKS_QUERY)
+
+  if (loading) return <p>Loading...</p>
+  if (error) return <p> Error:(</p>
+
+  const { books } = data
+
+  const bookListItems = books.map(({ id, name }) => {
+    return <li key={id}>{name}</li>
+  })
+  
+  return (
+    <div>
+      <ul id="book-list">
+        {bookListItems}
+      </ul>
+    </div>
+  );
 }
 
-export default graphql(GET_BOOKS_QUERY)(BookList);
+export default BookList;
