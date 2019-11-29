@@ -10,4 +10,3 @@ const GET_AUTHORS_QUERY = gql`
     }
   }
 `
-
