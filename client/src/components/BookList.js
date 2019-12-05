@@ -1,18 +1,12 @@
-import React from 'react';
-import { gql } from 'apollo-boost'
+import React, { useState } from 'react';
 import { useQuery } from '@apollo/react-hooks'
+import { GET_BOOKS_QUERY } from '../queries/queries'
 
-const GET_BOOKS_QUERY = gql`
-  {
-    books {
-      name
-      id
-    }
-  }
-`
+import BookDetails from './BookDetails'
 
 const BookList = () => {
   const { loading, error, data } = useQuery(GET_BOOKS_QUERY)
+  const [selected, setSelected] = useState(null);
 
   if (loading) return <p>Loading...</p>
   if (error) return <p> Error:(</p>
@@ -20,14 +14,15 @@ const BookList = () => {
   const { books } = data
 
   const bookListItems = books.map(({ id, name }) => {
-    return <li key={id}>{name}</li>
+    return <li onClick={() => setSelected(id)} key={id}>{name}</li>
   })
-  
+
   return (
     <div>
       <ul id="book-list">
         {bookListItems}
       </ul>
+      <BookDetails bookId={selected} />
     </div>
   );
 }
